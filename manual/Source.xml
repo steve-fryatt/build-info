@@ -1,0 +1,76 @@
+<manual>
+<title>CompileInfo</title>
+<strapline>Build and Compilation Information on RISC&nbsp;OS</strapline>
+<credit>&copy; Stephen Fryatt, 2005-2025</credit>
+<version>Version&nbsp;<define name="version" /></version>
+<date><define name="date" /></date>
+
+<index>
+<title>Contents</title>
+
+<chapterlist/>
+</index>
+
+<!-- Licence -->
+
+<chapter id="licence">
+<title>Licence</title>
+
+<section>
+<p><cite>CompileInfo</cite> is licensed under the EUPL, Version&nbsp;1.2 only (the &ldquo;Licence&rdquo;); you may not use this work except in compliance with the Licence.</p>
+
+<p>You may obtain a copy of the Licence at <link external="true" href="http://joinup.ec.europa.eu/software/page/eupl"/>.</p>
+
+<p>Unless required by applicable law or agreed to in writing, software distributed under the Licence is distributed on an &ldquo;<strong>as is</strong>&rdquo; basis, <strong>without warranties or conditions of any kind</strong>, either express or implied.</p>
+
+<p>See the Licence for the specific language governing permissions and limitations under the Licence.</p>
+
+<p>The source for <cite>CompileInfo</cite> can be found on GitHub, at <link external="true" href="https://github.com/steve-fryatt/compile-info"/>.</p>
+</section>
+</chapter>
+
+<!-- Introduction -->
+
+<chapter id="intro">
+<title>Introduction &amp; Installation</title>
+
+<section>
+<p>Stuff</p>
+</section>
+
+<section>
+<title>Installation</title>
+
+<p>More Stuff</p>
+</section>
+</chapter>
+
+<!-- History -->
+
+<chapter id="history">
+<title>Version History</title>
+
+<section>
+<p>This is a complete list of all the changes made to the publicly released versions of <cite>Compile Info</cite>.</p>
+</section>
+
+<section>
+<title>Test Build (<define name="date" />)</title>
+
+<p>First alpha release, for testing and feedback.</p>
+</section>
+</chapter>
+
+<!-- Contact Details -->
+
+<section id="contact">
+<title>Updates and Contacting Me</title>
+
+<p>If you have any comments about <cite>CompileInfo</cite>, or would like to report any bugs that you find, you can email me at the address below.</p>
+
+<p>Updates to <cite>CompileInfo</cite> and more software for RISC&nbsp;OS computers can be found on my website at <link href="http://www.stevefryatt.org.uk/risc-os"/>.</p>
+
+<p>Stephen Fryatt<br/>
+email: <link href="mailto:info@stevefryatt.org.uk" flatten="true">info@stevefryatt.org.uk</link></p>
+</section>
+</manual>

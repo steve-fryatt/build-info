@@ -1,0 +1,177 @@
+REM >CompileInfo
+REM
+REM Copyright 2003-2025, Stephen Fryatt (info@stevefryatt.org.uk)
+REM
+REM This file is part of CompileInfo:
+REM
+REM   http://www.stevefryatt.org.uk/risc-os
+REM
+REM Licensed under the EUPL, Version 1.2 only (the "Licence");
+REM You may not use this work except in compliance with the
+REM Licence.
+REM
+REM You may obtain a copy of the Licence at:
+REM
+REM   http://joinup.ec.europa.eu/software/page/eupl
+REM
+REM Unless required by applicable law or agreed to in
+REM writing, software distributed under the Licence is
+REM distributed on an "AS IS" basis, WITHOUT WARRANTIES
+REM OR CONDITIONS OF ANY KIND, either express or implied.
+REM
+REM See the Licence for the specific language governing
+REM permissions and limitations under the Licence.
+:
+REM Create a file with #defines of today's date and the a version number
+REM as supplied by the user or read from the commit hash of Git's HEAD in
+REM the repository from the current working directory.
+
+file$ = "h.compiledate"
+
+digits% = 7
+
+version$ = FNget_version_number(digits%)
+date$ = FNget_build_date
+
+PRINT "The version number is "; version$
+PRINT "The build date is "; date$
+
+PROCwrite_header_file(file$, date$, version$)
+END
+
+
+REM Write the header file to disc, relative to the working directory.
+REM
+REM \param file$	The relative path for the file.
+REM \param date$	The date to write.
+REM \param version$	The version number to write.
+:
+DEF PROCwrite_header_file(file$, date$, version$)
+LOCAL file%
+
+file%=OPENOUT(file$)
+IF file% = 0 THEN ENDPROC
+
+BPUT#file%,"/* compiledate.h"
+BPUT#file%," *"
+BPUT#file%," * Date of compilation and version for use as constants."
+BPUT#file%," * Auto-generated at compilation time by CompileInfo."
+BPUT#file%," */"
+BPUT#file%,""
+BPUT#file%,"#define INFO_BOX_DATE """+date$+""""
+BPUT#file%,"#define INFO_BOX_VERSION """+version$+""""
+
+CLOSE#file%
+
+SYS "OS_File", 18, file$, &FFF
+ENDPROC
+
+
+REM Get the current date, in "DD Mmm YYYY" format.
+REM
+REM \return		The current date.
+:
+DEF FNget_build_date
+LOCAL time%, date%, end%
+DIM time% LOCAL 5, date% LOCAL 32
+
+?time% = 3
+SYS "OS_Word", 14, time%
+
+SYS "OS_ConvertDateAndTime", time%, date%, 32, "%zdy %m3 %ce%yr" TO ,end%
+?end% = 13
+=$date%
+
+
+REM Get a version number for the build. We start by asking the user, and
+REM if they don't supply something we look to see if the current folder is
+REM a Git repository and try to return something based on the commit hash
+REM which is pointed to by HEAD.
+REM
+REM \param digits%	The number of digits of a commit hash to use.
+REM \return		A version number to use.
+:
+DEF FNget_version_number(digits%)
+LOCAL version$, hash$
+
+INPUT "Enter version number (empty for Git hash): " version$
+
+IF version$ = "" THEN
+	hash$ = FNget_commit_hash("HEAD")
+
+	IF hash$ <> "" THEN
+		version$ = RIGHT$(hash$, digits%)
+	ELSE
+		version$ = "****"
+	ENDIF
+ENDIF
+
+=version$
+
+
+REM Get the commit hash referenced by a given file, following any
+REM 'ref:' pointers which are found along the way.
+REM
+REM \param file$	The name of the file to read, relative to
+REM			the "/git" folder and using RISC OS format
+REM			separators.
+REM \return		The commit hash that was found, or ""
+:
+DEF FNget_commit_hash(file$)
+LOCAL path$, fh%, content$
+
+REM Read the (first line of the) file contents.
+
+fh% = OPENIN("/git." + file$)
+IF fh% = 0 THEN =""
+content$ = GET$#fh%
+CLOSE#fh%
+
+REM There must be enough characters for 'ref:' at the very least.
+REM A commit hash will be a lot longer than this!
+
+IF LEN(content$) < 4 THEN =""
+
+REM If this is a reference, follow it recursively and return the
+REM end result.
+
+IF LEFT$(content$, 4) = "ref:" THEN
+	path$ = MID$(content$, 5)
+
+	REM Strip the leading whitespace from the filename.
+
+	WHILE LEFT$(path$, 1) = " "
+		path$ = MID$(path$, 2)
+	ENDWHILE
+
+	REM Return the hash referenced by the file.
+
+	path$ = FNconvert_to_riscos_pathname(path$)
+	=FNget_commit_hash(path$)
+ENDIF
+
+REM This is just a commit hash, so we're done.
+
+=content$
+
+
+REM Convert a Posix filename into a RISC OS format one, by swapping
+REM '.' and '/'. There's no attempt to process any other characters;
+REM this would depend on the filing system in use to access the repo.
+REM
+REM \param path$	The path to be converted.
+REM \return		The converted path.
+:
+DEF FNconvert_to_riscos_pathname(path$)
+LOCAL i%, c$
+
+FOR i% = 1 TO LEN(path$)
+	c$ = MID$(path$, i%, 1)
+
+	CASE c$ OF
+		WHEN ".": MID$(path$, i%, 1) = "/"
+		WHEN "/": MID$(path$, i%, 1) = "."
+	ENDCASE
+NEXT i%
+
+=path$
