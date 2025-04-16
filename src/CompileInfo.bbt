@@ -47,21 +47,31 @@ REM \param date$	The date to write.
 REM \param version$	The version number to write.
 :
 DEF PROCwrite_header_file(file$, date$, version$)
-LOCAL file%
+LOCAL fh%
+LOCAL ERROR
 
-file%=OPENOUT(file$)
-IF file% = 0 THEN ENDPROC
+REM Close the file and bail if an error occurs.
+REM The file will be left where it is.
 
-BPUT#file%,"/* compiledate.h"
-BPUT#file%," *"
-BPUT#file%," * Date of compilation and version for use as constants."
-BPUT#file%," * Auto-generated at compilation time by CompileInfo."
-BPUT#file%," */"
-BPUT#file%,""
-BPUT#file%,"#define INFO_BOX_DATE """+date$+""""
-BPUT#file%,"#define INFO_BOX_VERSION """+version$+""""
+ON ERROR LOCAL PROCclose(fh%) : ENDPROC
 
-CLOSE#file%
+REM Write the file.
+
+fh%=OPENOUT(file$)
+IF fh% = 0 THEN ENDPROC
+
+BPUT#fh%,"/* compiledate.h"
+BPUT#fh%," *"
+BPUT#fh%," * Date of compilation and version for use as constants."
+BPUT#fh%," * Auto-generated at compilation time by CompileInfo."
+BPUT#fh%," */"
+BPUT#fh%,""
+BPUT#fh%,"#define INFO_BOX_DATE """+date$+""""
+BPUT#fh%,"#define INFO_BOX_VERSION """+version$+""""
+
+PROCclose(fh%)
+
+REM Set the filetype to Text.
 
 SYS "OS_File", 18, file$, &FFF
 ENDPROC
@@ -119,13 +129,18 @@ REM \return		The commit hash that was found, or ""
 :
 DEF FNget_commit_hash(file$)
 LOCAL path$, fh%, content$
+LOCAL ERROR
+
+REM If anything goes wrong, just get out with no hash.
+
+ON ERROR LOCAL PROCclose(fh%) : =""
 
 REM Read the (first line of the) file contents.
 
 fh% = OPENIN("/git." + file$)
 IF fh% = 0 THEN =""
 content$ = GET$#fh%
-CLOSE#fh%
+PROCclose(fh%)
 
 REM There must be enough characters for 'ref:' at the very least.
 REM A commit hash will be a lot longer than this!
@@ -175,3 +190,14 @@ FOR i% = 1 TO LEN(path$)
 NEXT i%
 
 =path$
+
+
+REM Safely close file handles.
+REM
+REM \param handle%	The handle to be closed; will be updated to zero on
+REM			exit.
+:
+DEF PROCclose(RETURN handle%)
+IF handle% <> 0 THEN CLOSE#handle%
+handle% = 0
+ENDPROC
