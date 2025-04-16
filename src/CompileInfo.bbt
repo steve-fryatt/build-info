@@ -26,17 +26,26 @@ REM Create a file with #defines of today's date and the a version number
 REM as supplied by the user or read from the commit hash of Git's HEAD in
 REM the repository from the current working directory.
 
-file$ = "h.compiledate"
+REM A global error handler to report and exit.
+ON ERROR PRINT REPORT$;" at line ";ERL : END
 
-digits% = 7
+header_file$ = ""
+date_variable$ = ""
+version_variable$ = ""
+version_digits% = 7
 
-version$ = FNget_version_number(digits%)
+IF NOT FNextract_parameters(header_file$, date_variable$, version_variable$, version_digits%) THEN END
+
+version$ = FNget_version_number(version_digits%)
 date$ = FNget_build_date
 
 PRINT "The version number is "; version$
 PRINT "The build date is "; date$
 
-PROCwrite_header_file(file$, date$, version$)
+IF header_file$ <> "" THEN PROCwrite_header_file(header_file$, date$, version$)
+IF date_variable$ <> "" THEN SYS "OS_SetVarVal", date_variable$, date$, LEN(date$), 0, 4
+IF version_variable$ <> "" THEN SYS "OS_SetVarVal", version_variable$, version$, LEN(version$), 0, 4
+
 END
 
 
@@ -201,3 +210,47 @@ DEF PROCclose(RETURN handle%)
 IF handle% <> 0 THEN CLOSE#handle%
 handle% = 0
 ENDPROC
+
+
+REM Extract the folder in which the program is being run from the
+REM CLI used to launch BASIC.
+REM
+REM \param header$	Variable in which to return the relative path for the
+REM 			heade file.
+REM \param date_var$	Variable in which to return the name of a system
+REM			variable in which to store the date.
+REM \param version_var$	Variable in which to return the name of a system
+REM			variable in which to store the version.
+REM \param digits%	Variable in which to return the number of digits to use
+REM			for the Git commit hash.
+REM \return		TRUE if parsing was successful; else FALSE.
+DEF FNextract_parameters(RETURN header$, RETURN date_var$, RETURN version_var$, RETURN digits%)
+LOCAL environment%, buffer%, buffer_size%, basic$, path$, eval%
+
+buffer_size% = 1024
+DIM buffer% buffer_size%
+
+REM Read the command line used to call the program.
+
+SYS "OS_GetEnv" TO environment%
+SYS "OS_ReadArgs", ",load=quit/K,header/K,datevar/K,versionvar/K,digits/E", environment%, buffer%, buffer_size%
+
+SYS "XOS_GenerateError", buffer%!0 TO basic$
+SYS "XOS_GenerateError", buffer%!4 TO path$
+
+REM We're assuming that we're being run by a double-click, and so the
+REM command line will start "BASIC -quit ...". If not, we don't go
+REM any further.
+
+IF basic$ <> "BASIC" OR path$ = "" THEN =FALSE
+
+REM The start of the line was OK, so process the rest.
+
+SYS "XOS_GenerateError", buffer%!8 TO header$
+SYS "XOS_GenerateError", buffer%!12 TO date_var$
+SYS "XOS_GenerateError", buffer%!16 TO version_var$
+
+eval% = buffer%!20
+IF eval% <> 0 THEN IF eval%?0 = 0 THEN digits% = eval%!1
+
+=TRUE
