@@ -1,6 +1,6 @@
 # Copyright 2025, Stephen Fryatt (info@stevefryatt.org.uk)
 #
-# This file is part of CompileInfo:
+# This file is part of BuildInfo:
 #
 #   http://www.stevefryatt.org.uk/risc-os
 #
@@ -24,12 +24,12 @@
 # It is intended for native compilation on Linux (for use in a GCCSDK
 # environment) or cross-compilation under the GCCSDK.
 
-ARCHIVE := compileinfo
+ARCHIVE := buildinfo
 
 MANSRC := Source.xml
 
-RUNIMAGE := CompileInfo,ffb
+RUNIMAGE := BuildInfo,ffb
 
-SRCS := CompileInfo.bbt	
+SRCS := BuildInfo.bbt	
 
 include $(SFTOOLS_MAKE)/BasicUtil

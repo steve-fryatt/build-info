@@ -1,5 +1,5 @@
 <manual>
-<title>CompileInfo</title>
+<title>BuildInfo</title>
 <strapline>Build and Compilation Information on RISC&nbsp;OS</strapline>
 <credit>&copy; Stephen Fryatt, 2005-2025</credit>
 <version>Version&nbsp;<define name="version" /></version>
@@ -17,7 +17,7 @@
 <title>Licence</title>
 
 <section>
-<p><cite>CompileInfo</cite> is licensed under the EUPL, Version&nbsp;1.2 only (the &ldquo;Licence&rdquo;); you may not use this work except in compliance with the Licence.</p>
+<p><cite>BuildInfo</cite> is licensed under the EUPL, Version&nbsp;1.2 only (the &ldquo;Licence&rdquo;); you may not use this work except in compliance with the Licence.</p>
 
 <p>You may obtain a copy of the Licence at <link external="true" href="http://joinup.ec.europa.eu/software/page/eupl"/>.</p>
 
@@ -25,7 +25,7 @@
 
 <p>See the Licence for the specific language governing permissions and limitations under the Licence.</p>
 
-<p>The source for <cite>CompileInfo</cite> can be found on GitHub, at <link external="true" href="https://github.com/steve-fryatt/compile-info"/>.</p>
+<p>The source for <cite>BuildInfo</cite> can be found on GitHub, at <link external="true" href="https://github.com/steve-fryatt/compile-info"/>.</p>
 </section>
 </chapter>
 
@@ -35,13 +35,17 @@
 <title>Introduction &amp; Installation</title>
 
 <section>
-<p>Stuff</p>
+<p><cite>BuildInfo</cite> is a utility to create the date and version information (build date and build version) needed when building software. It was created for use with the Desktop Development Environment, but could be useful in other configurations as well.</p>
+
+<p>The utility will read the current date and prompt at the command line for a version number, which can then be used in the build process (such as to be shown in an application&rsquo;s Program Information window). If no version is supplied and the Currently Selected Directory is the root of a Git repository (ie. the directory containing the <file>/Git</file> folder), then <cite>BuildInfo</cite> will use the current commit hash as the version string instead.</p>
+
+<p>Once the details have been collected, <cite>BuildInfo</cite> can write them to a header file or store them in nominated system variables before the rest of the build process begins.</p>
 </section>
 
 <section>
 <title>Installation</title>
 
-<p>More Stuff</p>
+<p>To install <cite>BuildInfo</cite>, simply ensure that the <file>BuildInfo</file> program is somewhere on <variable>Run$Path</variable> &ndash; this can be achieved easily by placing it into <file>Boot:Library</file>.</p>
 </section>
 </chapter>
 
@@ -51,7 +55,7 @@
 <title>Version History</title>
 
 <section>
-<p>This is a complete list of all the changes made to the publicly released versions of <cite>Compile Info</cite>.</p>
+<p>This is a complete list of all the changes made to the publicly released versions of <cite>BuildInfo</cite>.</p>
 </section>
 
 <section>
@@ -66,9 +70,9 @@
 <section id="contact">
 <title>Updates and Contacting Me</title>
 
-<p>If you have any comments about <cite>CompileInfo</cite>, or would like to report any bugs that you find, you can email me at the address below.</p>
+<p>If you have any comments about <cite>BuildInfo</cite>, or would like to report any bugs that you find, you can email me at the address below.</p>
 
-<p>Updates to <cite>CompileInfo</cite> and more software for RISC&nbsp;OS computers can be found on my website at <link href="http://www.stevefryatt.org.uk/risc-os"/>.</p>
+<p>Updates to <cite>BuildInfo</cite> and more software for RISC&nbsp;OS computers can be found on my website at <link href="http://www.stevefryatt.org.uk/risc-os"/>.</p>
 
 <p>Stephen Fryatt<br/>
 email: <link href="mailto:info@stevefryatt.org.uk" flatten="true">info@stevefryatt.org.uk</link></p>

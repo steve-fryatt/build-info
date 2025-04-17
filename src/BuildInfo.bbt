@@ -1,8 +1,8 @@
-REM >CompileInfo
+REM >BuildInfo
 REM
 REM Copyright 2003-2025, Stephen Fryatt (info@stevefryatt.org.uk)
 REM
-REM This file is part of CompileInfo:
+REM This file is part of BuildInfo:
 REM
 REM   http://www.stevefryatt.org.uk/risc-os
 REM
@@ -37,7 +37,7 @@ version_digits% = 7
 build_version$ = "***"
 build_date$ = "***"
 
-PRINT "Compile Info " + build_version$ + " (" +build_date$ + ")"
+PRINT "BuildInfo " + build_version$ + " (" +build_date$ + ")"
 
 IF NOT FNextract_parameters(header_file$, date_variable$, version_variable$, version_digits%) THEN END
 
@@ -76,12 +76,12 @@ IF fh% = 0 THEN ENDPROC
 
 BPUT#fh%,"/* compiledate.h"
 BPUT#fh%," *"
-BPUT#fh%," * Date of compilation and version for use as constants."
-BPUT#fh%," * Auto-generated at compilation time by CompileInfo."
+BPUT#fh%," * Date of build and version for use as constants."
+BPUT#fh%," * Auto-generated at build time by BuildInfo."
 BPUT#fh%," */"
 BPUT#fh%,""
-BPUT#fh%,"#define INFO_BOX_DATE """+date$+""""
-BPUT#fh%,"#define INFO_BOX_VERSION """+version$+""""
+BPUT#fh%,"#define BUILD_INFO_DATE """+date$+""""
+BPUT#fh%,"#define BUILD_INFO_VERSION """+version$+""""
 
 PROCclose(fh%)
 
