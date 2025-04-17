@@ -35,17 +35,88 @@
 <title>Introduction &amp; Installation</title>
 
 <section>
-<p><cite>BuildInfo</cite> is a utility to create the date and version information (build date and build version) needed when building software. It was created for use with the Desktop Development Environment, but could be useful in other configurations as well.</p>
+<p><cite>BuildInfo</cite> is a utility to create the date and version information (build date and build version) needed when building software. It was created for use with the Desktop Development Environment (DDE), but could be useful in other configurations as well.</p>
 
 <p>The utility will read the current date and prompt at the command line for a version number, which can then be used in the build process (such as to be shown in an application&rsquo;s Program Information window). If no version is supplied and the Currently Selected Directory is the root of a Git repository (ie. the directory containing the <file>/Git</file> folder), then <cite>BuildInfo</cite> will use the current commit hash as the version string instead.</p>
 
 <p>Once the details have been collected, <cite>BuildInfo</cite> can write them to a header file or store them in nominated system variables before the rest of the build process begins.</p>
+
+<p><cite>BuildInfo</cite> is a more generalised &ndash; and polished &ndash; evolution of a <cite>CompileDate</cite> utility that I was using back in the early 2000s for building C applications natively. It aims to be broadly compatible in use with the Linux tools that I now use when cross-compiling with the GCCSDK.</p>
 </section>
 
 <section>
 <title>Installation</title>
 
 <p>To install <cite>BuildInfo</cite>, simply ensure that the <file>BuildInfo</file> program is somewhere on <variable>Run$Path</variable> &ndash; this can be achieved easily by placing it into <file>Boot:Library</file>.</p>
+</section>
+</chapter>
+
+<!-- Usage -->
+
+<chapter id="usage">
+<title>Usage</title>
+
+<section>
+<p><cite>BuildInfo</cite> expects the Currently Selected Directory (CSD) to be the directory containing the project being built, in line with the standard practice for DDE build scripts to start with a <code>*Dir &lt;Obey$Dir&gt;</code> line. For example</p>
+
+<code>Dir &lt;Obey$Dir&gt;
+BuildInfo</code>
+
+<p>It will start be reporting its own version number and build date, before prompting for the required version number for the build.</p>
+
+<code>BuildInfo 0.00 (17 Apr 2025)
+Enter version number (leave empty to use Git hash):</code>
+
+<p>A version number can be typed in at this point, in whatever format your build process expects: it is just a text string. If the field is left blank and <key>Return</key> pressed immediately, <cite>BuildInfo</cite> will look for a <file>/Git</file> folder in the CSD and attempt to identify the commit hash associated with <name>HEAD</name>. If a hash is found, this will be used as a version &ndash; by default the last seven digits (the number of digits can be changed by passing the <command>-digits &lt;n&gt;</command> parameter).</p>
+
+<p>Once the version number has been resolved, <cite>BuildInfo</cite> will report the details and then proceed to set up the build prerequisites.</p>
+
+<code>The version number is e9916c3
+The build date is 17 Apr 2025</code>
+
+<p>The actions which are taken will depend on the parameters passed to the command from the build script. Any combination of the following may be carried out.</p>
+
+<p>If a version number is entered, then this will be used instead of looking up a commit hash. For example</p>
+
+<code>BuildInfo 0.00 (17 Apr 2025)
+Enter version number (leave empty to use Git hash): 1.23
+The version number is 1.23
+The build date is 17 Apr 2025</code>
+</section>
+
+<section>
+<title>System variables</title>
+
+<p><cite>BuildInfo</cite> can set two system variables to hold the date and version as displayed on the command line. These are specified using the <command>-datevar &lt;name&gt;</command> and <command>-versionvar &lt;name&gt;</command> parameters. For example</p>
+
+<code>BuildInfo -datevar Build$Date -versionvar Build$Version</code>
+
+<p>would set <variable>Build$Date</variable> to contain the date (such as &ldquo;17 Apr 2025&rdquo;) and <variable>Build$Version</variable> to contain the version (such as &ldquo;e9916c3&rdquo;). If only a four character commit hash was required, then</p>
+
+<code>BuildInfo -datevar Build$Date -versionvar Build$Version -digits 4</code>
+
+<p>would result in <variable>Build$Version</variable> containing &ldquo;16c3&rdquo; in this example.</p>
+</section>
+
+<section>
+<title>C Header file</title>
+
+<p>A C header file can be written out, defining the constants <name>BUILD_INFO_DATE</name> and <name>BUILD_INFO_VERSION</name>. The name of the file, relative to the CSD, is specified using the  <command>-cheader &lt;path&gt;</command> parameter. For example, the command</p>
+
+<code>BuildInfo -cheader h.buildinfo</code>
+
+<p>would result in the <file>h.buildinfo</file> file being written containing</p>
+
+<code>/* h.buildinfo
+ *
+ * Date of build and version for use as constants.
+ * Auto-generated at build time by BuildInfo.
+ */
+
+#define BUILD_INFO_DATE &quot;17 Apr 2025&quot;
+#define BUILD_INFO_VERSION &quot;e9916c3&quot;</code>
+
+<p>Again, the number of digits in the commit hash can be set with the <command>-digits &lt;n&gt;</command> parameter.</p>
 </section>
 </chapter>
 
