@@ -34,6 +34,11 @@ date_variable$ = ""
 version_variable$ = ""
 version_digits% = 7
 
+build_version$ = "***"
+build_date$ = "***"
+
+PRINT "Compile Info " + build_version$ + " (" +build_date$ + ")"
+
 IF NOT FNextract_parameters(header_file$, date_variable$, version_variable$, version_digits%) THEN END
 
 version$ = FNget_version_number(version_digits%)
@@ -113,7 +118,7 @@ REM \return		A version number to use.
 DEF FNget_version_number(digits%)
 LOCAL version$, hash$
 
-INPUT "Enter version number (empty for Git hash): " version$
+INPUT "Enter version number (leave empty to use Git hash): " version$
 
 IF version$ = "" THEN
 	hash$ = FNget_commit_hash("HEAD")
