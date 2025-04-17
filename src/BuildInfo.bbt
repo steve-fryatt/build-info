@@ -74,7 +74,7 @@ REM Write the file.
 fh%=OPENOUT(file$)
 IF fh% = 0 THEN ENDPROC
 
-BPUT#fh%,"/* compiledate.h"
+BPUT#fh%,"/* "+file$
 BPUT#fh%," *"
 BPUT#fh%," * Date of build and version for use as constants."
 BPUT#fh%," * Auto-generated at build time by BuildInfo."
@@ -238,7 +238,7 @@ DIM buffer% buffer_size%
 REM Read the command line used to call the program.
 
 SYS "OS_GetEnv" TO environment%
-SYS "OS_ReadArgs", ",load=quit/K,header/K,datevar/K,versionvar/K,digits/E", environment%, buffer%, buffer_size%
+SYS "OS_ReadArgs", ",load=quit/K,cheader/K,datevar/K,versionvar/K,digits/E", environment%, buffer%, buffer_size%
 
 SYS "XOS_GenerateError", buffer%!0 TO basic$
 SYS "XOS_GenerateError", buffer%!4 TO path$
