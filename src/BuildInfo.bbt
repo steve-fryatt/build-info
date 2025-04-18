@@ -124,7 +124,7 @@ IF version$ = "" THEN
 	hash$ = FNget_commit_hash("HEAD")
 
 	IF hash$ <> "" THEN
-		version$ = RIGHT$(hash$, digits%)
+		version$ = LEFT$(hash$, digits%)
 	ELSE
 		version$ = "****"
 	ENDIF
