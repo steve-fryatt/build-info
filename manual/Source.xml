@@ -67,7 +67,7 @@ BuildInfo</code>
 <code>BuildInfo 0.00 (17 Apr 2025)
 Enter version number (leave empty to use Git hash):</code>
 
-<p>A version number can be typed in at this point, in whatever format your build process expects: it is just a text string. If the field is left blank and <key>Return</key> pressed immediately, <cite>BuildInfo</cite> will look for a <file>/Git</file> folder in the CSD and attempt to identify the commit hash associated with <name>HEAD</name>. If a hash is found, this will be used as a version &ndash; by default taking the first seven digits.</p>
+<p>A version number can be typed in at this point, in whatever format your build process expects: it is just a text string. If the field is left blank and <keypress><key>Return</key></keypress> pressed immediately, <cite>BuildInfo</cite> will look for a <file>/Git</file> folder in the CSD and attempt to identify the commit hash associated with <name>HEAD</name>. If a hash is found, this will be used as a version &ndash; by default taking the first seven digits.</p>
 
 <p>Once the version number has been resolved, <cite>BuildInfo</cite> will report the details and then proceed to set up the build prerequisites.</p>
 
