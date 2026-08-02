@@ -1,6 +1,6 @@
 REM >BuildInfo
 REM
-REM Copyright 2003-2025, Stephen Fryatt (info@stevefryatt.org.uk)
+REM Copyright 2003-2026, Stephen Fryatt (info@stevefryatt.org.uk)
 REM
 REM This file is part of BuildInfo:
 REM
@@ -33,15 +33,16 @@ header_file$ = ""
 date_variable$ = ""
 version_variable$ = ""
 version_digits% = 7
+quiet% = FALSE
 
 build_version$ = "***"
 build_date$ = "***"
 
 PRINT "BuildInfo " + build_version$ + " (" +build_date$ + ")"
 
-IF NOT FNextract_parameters(header_file$, date_variable$, version_variable$, version_digits%) THEN END
+IF NOT FNextract_parameters(header_file$, date_variable$, version_variable$, version_digits%, quiet%) THEN END
 
-version$ = FNget_version_number(version_digits%)
+version$ = FNget_version_number(NOT quiet%, version_digits%)
 date$ = FNget_build_date
 
 PRINT "The version number is "; version$
@@ -112,13 +113,15 @@ REM if they don't supply something we look to see if the current folder is
 REM a Git repository and try to return something based on the commit hash
 REM which is pointed to by HEAD.
 REM
+REM \param ask_user%	Should the user be asked for a version number? If not,
+REM			we will always take the commit hash.
 REM \param digits%	The number of digits of a commit hash to use.
 REM \return		A version number to use.
 :
-DEF FNget_version_number(digits%)
+DEF FNget_version_number(ask_user%, digits%)
 LOCAL version$, hash$
 
-INPUT "Enter version number (leave empty to use Git hash): " version$
+IF ask_user% THEN INPUT "Enter version number (leave empty to use Git hash): " version$
 
 IF version$ = "" THEN
 	hash$ = FNget_commit_hash("HEAD")
@@ -221,15 +224,17 @@ REM Extract the folder in which the program is being run from the
 REM CLI used to launch BASIC.
 REM
 REM \param header$	Variable in which to return the relative path for the
-REM 			heade file.
+REM 			header file.
 REM \param date_var$	Variable in which to return the name of a system
 REM			variable in which to store the date.
 REM \param version_var$	Variable in which to return the name of a system
 REM			variable in which to store the version.
 REM \param digits%	Variable in which to return the number of digits to use
 REM			for the Git commit hash.
+REM \param quiet%	Variable in which to return the presence of the -quiet
+REM			flag.
 REM \return		TRUE if parsing was successful; else FALSE.
-DEF FNextract_parameters(RETURN header$, RETURN date_var$, RETURN version_var$, RETURN digits%)
+DEF FNextract_parameters(RETURN header$, RETURN date_var$, RETURN version_var$, RETURN digits%, RETURN quiet%)
 LOCAL environment%, buffer%, buffer_size%, basic$, path$, eval%
 
 buffer_size% = 1024
@@ -238,7 +243,7 @@ DIM buffer% buffer_size%
 REM Read the command line used to call the program.
 
 SYS "OS_GetEnv" TO environment%
-SYS "OS_ReadArgs", ",load=quit/K,cheader/K,datevar/K,versionvar/K,digits/E", environment%, buffer%, buffer_size%
+SYS "OS_ReadArgs", ",load=quit/K,cheader/K,datevar/K,versionvar/K,digits/E,quiet/S", environment%, buffer%, buffer_size%
 
 SYS "XOS_GenerateError", buffer%!0 TO basic$
 SYS "XOS_GenerateError", buffer%!4 TO path$
@@ -257,5 +262,7 @@ SYS "XOS_GenerateError", buffer%!16 TO version_var$
 
 eval% = buffer%!20
 IF eval% <> 0 THEN IF eval%?0 = 0 THEN digits% = eval%!1
+
+quiet% = (buffer%!24 <> 0)
 
 =TRUE

@@ -1,7 +1,7 @@
 <manual>
 <title>BuildInfo</title>
 <strapline>Build and Compilation Information on RISC&nbsp;OS</strapline>
-<credit>&copy; Stephen Fryatt, 2005-2025</credit>
+<credit>&copy; Stephen Fryatt, 2005-2026</credit>
 <version>Version&nbsp;<define name="version" /></version>
 <date><define name="date" /></date>
 
@@ -69,6 +69,8 @@ Enter version number (leave empty to use Git hash):</code>
 
 <p>A version number can be typed in at this point, in whatever format your build process expects: it is just a text string. If the field is left blank and <keypress><key>Return</key></keypress> pressed immediately, <cite>BuildInfo</cite> will look for a <file>/Git</file> folder in the CSD and attempt to identify the commit hash associated with <name>HEAD</name>. If a hash is found, this will be used as a version &ndash; by default taking the first seven digits.</p>
 
+<p>If the commit hash is all that is required, the question to the user can be skipped by passing the <command>-quiet</command> parameter when calling <cite>BuildInfo</cite>. It will then proceed to obtain the commit hash without pausing for user input.</p>
+
 <p>Once the version number has been resolved, <cite>BuildInfo</cite> will report the details and then proceed to set up the build prerequisites.</p>
 
 <code>The version number is e9916c3
@@ -90,7 +92,7 @@ Enter version number (leave empty to use Git hash): 1.23
 The version number is 1.23
 The build date is 17 Apr 2025</code>
 
-<p>The actions which are taken after this point will depend on the parameters passed to the command from the build script. Any combination of the options descibed in the following sections may be carried out.</p>
+<p>The actions which are taken after this point will depend on the parameters passed to the command from the build script. Any combination of the options described in the following sections may be carried out.</p>
 </section>
 
 <section>
@@ -145,6 +147,16 @@ The build date is 17 Apr 2025</code>
 
 <ul>
 <li><p>Create trimmed commit hashes from the start of the number, in line with common practice.</p></li>
+</ul>
+</section>
+
+<section>
+<title>1.10 (2 Aug 2026)</title>
+
+<p>Second public release.</p>
+
+<ul>
+<li><p>Add <command>-quiet</command> flag to allow user interaction to be skipped.</p></li>
 </ul>
 </section>
 </chapter>
